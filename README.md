@@ -19,41 +19,6 @@ dependencies:
 
 ## Usage
 
-```Dart
-import 'package:flutter/material.dart';
-import 'package:dialogs/dialogs.dart';
-
-class MyWidget extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return ElevatedButton(
-      onPressed: () {
-        context.showModalDialog(
-          builder: (context) => AlertDialog(
-            title: Text('Alert!'),
-            content: Text('Something happened!'),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  context.dismiss();
-                },
-                child: Text('OK'),
-              ),
-            ],
-          ),
-        );
-      },
-      child: Text('Show Alert'),
-    );
-  }
-}
-
-```
-
-In the example above, `showModalDialog` is called on the `BuildContext` object to display an `AlertDialog` when the user taps the `ElevatedButton`. The dismiss method is called when the user taps the "OK" button in the dialog.
-
-## API Reference
-
 Dialogs provides the following methods:
 
 ### showToast
