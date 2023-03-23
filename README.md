@@ -1,39 +1,94 @@
-<!--
-This README describes the package. If you publish this package to pub.dev,
-this README's contents appear on the landing page for your package.
+# Dialogs
 
-For information about how to write a good package README, see the guide for
-[writing package pages](https://dart.dev/guides/libraries/writing-package-pages).
+Dialogs is a Flutter package that provides an easy way to display dialogs and toasts in your Flutter app. With Dialogs, you can save time and effort by avoiding boilerplate code.
 
-For general information about developing packages, see the Dart guide for
-[creating packages](https://dart.dev/guides/libraries/create-library-packages)
-and the Flutter guide for
-[developing packages and plugins](https://flutter.dev/developing-packages).
--->
+If you encounter any issues or have any suggestions, please don't hesitate to open an issue or pull request on the GitHub repository.
 
-TODO: Put a short description of the package here that helps potential users
-know whether this package might be useful for them.
+## Installation
 
-## Features
+To use Dialogs in your Flutter project, follow these steps:
 
-TODO: List what your package can do. Maybe include images, gifs, or videos.
+1. Add the package to your pubspec.yaml file:
 
-## Getting started
+```yaml
+dependencies:
+  dialogs: ^0.0.1
+```
 
-TODO: List prerequisites and provide or point to information on how to
-start using the package.
+2. Install the package by running flutter pub get in your terminal.
 
 ## Usage
 
-TODO: Include short and useful examples for package users. Add longer examples
-to `/example` folder.
+```Dart
+import 'package:flutter/material.dart';
+import 'package:dialog_extension/dialog_extension.dart';
 
-```dart
-const like = 'sample';
+class MyWidget extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+      onPressed: () {
+        context.showModalDialog(
+          builder: (context) => AlertDialog(
+            title: Text('Alert!'),
+            content: Text('Something happened!'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  context.dismiss();
+                },
+                child: Text('OK'),
+              ),
+            ],
+          ),
+        );
+      },
+      child: Text('Show Alert'),
+    );
+  }
+}
+
 ```
 
-## Additional information
+In the example above, `showModalDialog` is called on the `BuildContext` object to display an `AlertDialog` when the user taps the `ElevatedButton`. The dismiss method is called when the user taps the "OK" button in the dialog.
 
-TODO: Tell users more about the package: where to find more information, how to
-contribute to the package, how to file issues, what response they can expect
-from the package authors, and more.
+## API Reference
+
+Dialogs provides the following methods:
+
+### showToast
+
+```Dart
+void showToast(
+  String message, {
+  Duration toastDuration = const Duration(seconds: 3),
+  Duration transitionDuration = const Duration(milliseconds: 200),
+  Color backgroundColor = Colors.black,
+  Color textColor = Colors.white,
+})
+```
+
+Displays a Material toast with the specified message. Optional parameters include the duration of the toast, the duration of the transition animation, and the background and text colors.
+
+However, if this function is called multiple times, the previous toast will disappear.
+
+### dismiss
+
+```Dart
+void dismiss<T>([T? result])
+```
+
+Dismisses the current dialog if any, with an optional result. If there is no dialog currently displayed, calling this method will have no effect.
+
+### showModalDialog
+
+```Dart
+Future<T?> showModalDialog<T>({
+  required WidgetBuilder builder,
+  Color barrierColor = const Color(0x80000000),
+  bool barrierDismissible = true,
+  Duration transitionDuration = const Duration(milliseconds: 200),
+})
+```
+
+Displays a modal dialog that will block user interaction until dismissed. The dialog is built using the specified WidgetBuilder. Optional parameters include the barrier color, whether the dialog can be dismissed by tapping outside of it, and the duration of the transition animation.

@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 extension Dialog on BuildContext {
   /// Shows a Material Toast.
   ///
-  /// Calling This multiple times, because the previous
+  /// Calling This multiple times, cause the previous
   /// Toast to disappears.
   void showToast(
     String message, {
@@ -129,8 +129,8 @@ class _Dialogs {
     Future.delayed(toastDuration, () async {
       // here we are accessing the toast from the map and
       // not the entry itself because we might dispose the toast
-      // before the 3 secods end, so if we try to show an other toast
-      // we will dispose the old one, and when the 3 seconds finish,
+      // before toastDuration end, so if we try to show an other toast
+      // we will dispose the old one, and when toastDuration finish,
       // this will throw, so we are checking if overly is still showing
       // first, and if it is, then we remove it.
       if (_overlayEntries.containsKey(entry)) {
