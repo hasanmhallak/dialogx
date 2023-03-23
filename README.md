@@ -21,7 +21,7 @@ dependencies:
 
 ```Dart
 import 'package:flutter/material.dart';
-import 'package:dialog_extension/dialog_extension.dart';
+import 'package:dialogs/dialogs.dart';
 
 class MyWidget extends StatelessWidget {
   @override
