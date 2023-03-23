@@ -1,3 +1,3 @@
 library dialogs;
 
-export 'package:dialogs/dialogs.dart';
+export 'package:dialogs/src/dialogs.dart';
