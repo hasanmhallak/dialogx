@@ -5,12 +5,17 @@ class Toast extends StatefulWidget {
   final Duration transitionDuration;
   final Color backgroundColor;
   final Color textColor;
+  final VoidCallback onDispose;
+  @visibleForTesting
+  final Key? containerKey;
   const Toast({
     super.key,
     required this.message,
     required this.transitionDuration,
     required this.backgroundColor,
     required this.textColor,
+    required this.onDispose,
+    this.containerKey,
   });
 
   @override
@@ -36,6 +41,7 @@ class ToastState extends State<Toast> with SingleTickerProviderStateMixin {
   @override
   void dispose() {
     _controller.dispose();
+    widget.onDispose();
     super.dispose();
   }
 
@@ -72,12 +78,13 @@ class ToastState extends State<Toast> with SingleTickerProviderStateMixin {
               child: Material(
                 color: Colors.transparent,
                 child: Container(
+                  key: widget.containerKey,
                   padding: const EdgeInsets.symmetric(
                     horizontal: 14,
                     vertical: 10,
                   ),
                   decoration: BoxDecoration(
-                    color: widget.backgroundColor.withOpacity(0.8),
+                    color: widget.backgroundColor,
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: Text(
