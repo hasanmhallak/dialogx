@@ -1,4 +1,4 @@
-# Dialogs
+# Dialogx
 
 Dialogs is a Flutter package that provides an easy way to display dialogs and toasts in your Flutter app. With Dialogs, you can save time and effort by avoiding boilerplate code.
 

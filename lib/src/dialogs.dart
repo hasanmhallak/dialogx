@@ -1,11 +1,11 @@
 import 'dart:async';
 
-import 'package:dialogs/src/toast.dart';
+import 'package:dialogx/src/toast.dart';
 import 'package:flutter/material.dart';
 
 import 'modal_dialog.dart';
 
-class Dialogs {
+class Dialogx {
   static Completer _completer = Completer();
   static final _overlayEntries = <OverlayEntry, GlobalKey<ToastState>>{};
   static Timer? _timer;

@@ -15,7 +15,7 @@ extension Dialog on BuildContext {
     Color textColor = Colors.white,
     @visibleForTesting Key? containerKey,
   }) {
-    return Dialogs.showToast(
+    return Dialogx.showToast(
       this,
       message,
       toastDuration: toastDuration,
@@ -30,7 +30,7 @@ extension Dialog on BuildContext {
   ///
   /// Calling this when no dialog on the screen, will have
   /// no effect.
-  void dismiss<T>([T? result]) => Dialogs.dismiss(result);
+  void dismiss<T>([T? result]) => Dialogx.dismiss(result);
 
   /// Show a modal dialog that will block the user interaction.
   Future<T?> showModalDialog<T>({
@@ -39,7 +39,7 @@ extension Dialog on BuildContext {
     bool barrierDismissible = true,
     Duration transitionDuration = const Duration(milliseconds: 200),
   }) async =>
-      Dialogs.showModalDialog(
+      Dialogx.showModalDialog(
         this,
         builder: builder,
         barrierDismissible: barrierDismissible,

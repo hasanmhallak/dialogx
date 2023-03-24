@@ -1,4 +1,4 @@
-import 'package:dialogs/dialogs.dart';
+import 'package:dialogx/dialogx.dart';
 import 'package:flutter/material.dart';
 
 void main() {

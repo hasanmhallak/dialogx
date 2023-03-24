@@ -1,7 +1,7 @@
-name: dialogs
+name: dialogx
 description: An easy way to show dialogs in flutter.
 version: 0.0.1
-homepage:
+homepage: https://github.com/hasanmhallak/dialogx
 
 environment:
   sdk: ">=2.19.2 <3.0.0"
