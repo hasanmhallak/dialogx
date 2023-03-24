@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../dialogs.dart';
+import 'dialogs.dart';
 
 extension Dialog on BuildContext {
   /// Shows a Material Toast.
@@ -13,6 +13,7 @@ extension Dialog on BuildContext {
     Duration transitionDuration = const Duration(milliseconds: 200),
     Color backgroundColor = Colors.black,
     Color textColor = Colors.white,
+    @visibleForTesting Key? containerKey,
   }) {
     return Dialogs.showToast(
       this,
@@ -21,6 +22,7 @@ extension Dialog on BuildContext {
       transitionDuration: transitionDuration,
       backgroundColor: backgroundColor,
       textColor: textColor,
+      containerKey: containerKey,
     );
   }
 
