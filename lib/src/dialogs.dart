@@ -1,54 +1,13 @@
 import 'dart:async';
 
+import 'package:dialogs/src/toast.dart';
 import 'package:flutter/material.dart';
 
-extension Dialog on BuildContext {
-  /// Shows a Material Toast.
-  ///
-  /// Calling This multiple times, cause the previous
-  /// Toast to disappears.
-  void showToast(
-    String message, {
-    Duration toastDuration = const Duration(seconds: 3),
-    Duration transitionDuration = const Duration(milliseconds: 200),
-    Color backgroundColor = Colors.black,
-    Color textColor = Colors.white,
-  }) {
-    return _Dialogs.showToast(
-      this,
-      message,
-      toastDuration: toastDuration,
-      transitionDuration: transitionDuration,
-      backgroundColor: backgroundColor,
-      textColor: textColor,
-    );
-  }
+import 'modal_dialog.dart';
 
-  /// Dismisses The current Dialog if any, with [result].
-  ///
-  /// Calling this when no dialog on the screen, will have
-  /// no effect.
-  void dismiss<T>([T? result]) => _Dialogs.dismiss(result);
-
-  /// Show a modal dialog that will block the user interaction.
-  Future<T?> showModalDialog<T>({
-    required WidgetBuilder builder,
-    Color barrierColor = const Color(0x80000000),
-    bool barrierDismissible = true,
-    Duration transitionDuration = const Duration(milliseconds: 200),
-  }) async =>
-      _Dialogs.showModalDialog(
-        this,
-        builder: builder,
-        barrierDismissible: barrierDismissible,
-        transitionDuration: transitionDuration,
-        barrierColor: barrierColor,
-      );
-}
-
-class _Dialogs {
+class Dialogs {
   static Completer _completer = Completer();
-  static final _overlayEntries = <OverlayEntry, GlobalKey<_ToastState>>{};
+  static final _overlayEntries = <OverlayEntry, GlobalKey<ToastState>>{};
 
   static void dismiss<T>([T? result]) {
     if (!_completer.isCompleted) {
@@ -65,7 +24,7 @@ class _Dialogs {
     Duration transitionDuration = const Duration(milliseconds: 200),
   }) {
     final navigator = Navigator.of(context, rootNavigator: true);
-    final dialog = _ModalDialog<T>(
+    final dialog = ModalDialog<T>(
       barrierColor: barrierColor,
       barrierDismissible: barrierDismissible,
       transitionDuration: transitionDuration,
@@ -100,10 +59,10 @@ class _Dialogs {
   }) {
     final overlay = Overlay.of(context);
     // this will allow us to reverse the animation.
-    final stateKey = GlobalKey<_ToastState>();
+    final stateKey = GlobalKey<ToastState>();
     final entry = OverlayEntry(
       builder: (context) {
-        return _Toast(
+        return Toast(
           key: stateKey,
           message: message,
           backgroundColor: backgroundColor,
@@ -141,121 +100,5 @@ class _Dialogs {
         _overlayEntries.remove(entry);
       }
     });
-  }
-}
-
-class _ModalDialog<T> extends RawDialogRoute<T> {
-  _ModalDialog({
-    super.barrierColor,
-    super.barrierDismissible,
-    super.transitionDuration,
-    required WidgetBuilder builder,
-    required CapturedThemes capturedThemes,
-  }) : super(
-          pageBuilder: (
-            BuildContext buildContext,
-            Animation<double> animation,
-            Animation<double> secondaryAnimation,
-          ) {
-            final Widget pageChild = builder(buildContext);
-            return capturedThemes.wrap(pageChild);
-          },
-        );
-}
-
-class _Toast extends StatefulWidget {
-  final String message;
-  final Duration transitionDuration;
-  final Color backgroundColor;
-  final Color textColor;
-  const _Toast({
-    super.key,
-    required this.message,
-    required this.transitionDuration,
-    required this.backgroundColor,
-    required this.textColor,
-  });
-
-  @override
-  State<_Toast> createState() => _ToastState();
-}
-
-class _ToastState extends State<_Toast> with SingleTickerProviderStateMixin {
-  late final AnimationController _controller;
-  late final Animation<double> _animation;
-  @override
-  void initState() {
-    _controller = AnimationController(
-      vsync: this,
-      duration: widget.transitionDuration,
-    )..forward();
-    _animation = CurvedAnimation(
-      parent: _controller,
-      curve: Curves.ease,
-    );
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  Future<void> reveredTransition() async {
-    await _controller.reverse();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Stack(
-      alignment: Alignment.center,
-      children: [
-        Positioned(
-          top: MediaQuery.of(context).size.height -
-              MediaQuery.of(context).size.height / 5,
-          child: ConstrainedBox(
-            constraints: BoxConstraints(
-              maxWidth: MediaQuery.of(context).size.width - 40,
-            ),
-            child: AnimatedBuilder(
-              animation: _animation,
-              builder: (context, child) {
-                return SlideTransition(
-                  position: Tween(
-                    begin: Offset.zero,
-                    end: const Offset(0, -1),
-                  ).animate(_animation),
-                  child: FadeTransition(
-                    opacity: _animation,
-                    child: child,
-                  ),
-                );
-              },
-              child: Material(
-                color: Colors.transparent,
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 14,
-                    vertical: 10,
-                  ),
-                  decoration: BoxDecoration(
-                    color: widget.backgroundColor.withOpacity(0.8),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Text(
-                    widget.message,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: widget.textColor,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ),
-      ],
-    );
   }
 }
