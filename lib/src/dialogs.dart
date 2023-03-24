@@ -8,6 +8,7 @@ import 'modal_dialog.dart';
 class Dialogs {
   static Completer _completer = Completer();
   static final _overlayEntries = <OverlayEntry, GlobalKey<ToastState>>{};
+  static Timer? _timer;
 
   static void dismiss<T>([T? result]) {
     if (!_completer.isCompleted) {
@@ -54,8 +55,10 @@ class Dialogs {
     String message, {
     Duration toastDuration = const Duration(seconds: 3),
     Duration transitionDuration = const Duration(milliseconds: 200),
-    Color backgroundColor = Colors.black,
+    // black with 80% opacity.
+    Color backgroundColor = const Color(0xCC000000),
     Color textColor = Colors.white,
+    Key? containerKey,
   }) {
     final overlay = Overlay.of(context);
     // this will allow us to reverse the animation.
@@ -68,6 +71,21 @@ class Dialogs {
           backgroundColor: backgroundColor,
           transitionDuration: transitionDuration,
           textColor: textColor,
+          containerKey: containerKey,
+          onDispose: () {
+            // cancel timer if the widget was dispose for some reason.
+            // e.g. in tests.
+            _timer!.cancel();
+            _overlayEntries
+              ..forEach(
+                (key, value) {
+                  key
+                    ..remove()
+                    ..dispose();
+                },
+              )
+              ..clear();
+          },
         );
       },
     );
@@ -85,7 +103,7 @@ class Dialogs {
     overlay.insert(entry);
     // save toast to the map.
     _overlayEntries[entry] = stateKey;
-    Future.delayed(toastDuration, () async {
+    _timer = Timer(toastDuration, () async {
       // here we are accessing the toast from the map and
       // not the entry itself because we might dispose the toast
       // before toastDuration end, so if we try to show an other toast
