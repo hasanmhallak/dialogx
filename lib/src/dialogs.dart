@@ -58,12 +58,25 @@ class Dialogx {
     // black with 80% opacity.
     Color backgroundColor = const Color(0xCC000000),
     Color textColor = Colors.white,
-    Key? containerKey,
+    @visibleForTesting Key? containerKey,
   }) {
+    // clear any toast that is showing on the screen.
+    _overlayEntries.forEach(
+      (key, value) {
+        key
+          ..remove()
+          ..dispose();
+      },
+    );
+    _overlayEntries.clear();
+    _timer?.cancel();
+    _timer = null;
+
     final overlay = Overlay.of(context);
     // this will allow us to reverse the animation.
     final stateKey = GlobalKey<ToastState>();
-    final entry = OverlayEntry(
+    late final OverlayEntry entry;
+    entry = OverlayEntry(
       builder: (context) {
         return Toast(
           key: stateKey,
@@ -72,37 +85,26 @@ class Dialogx {
           transitionDuration: transitionDuration,
           textColor: textColor,
           containerKey: containerKey,
-          onDispose: () {
-            // cancel timer if the widget was dispose for some reason.
+          onDispose: () async {
+            // clear resources if the widget was dispose for some reason.
             // e.g. in tests.
-            _timer!.cancel();
-            _overlayEntries
-              ..forEach(
-                (key, value) {
-                  key
-                    ..remove()
-                    ..dispose();
-                },
-              )
-              ..clear();
+            if (_overlayEntries.containsKey(entry)) {
+              _timer!.cancel();
+              await _overlayEntries[entry]!.currentState!.reveredTransition();
+              entry
+                ..remove()
+                ..dispose();
+              _overlayEntries.remove(entry);
+            }
           },
         );
       },
     );
-    // clear any toast that is showing on the screen.
-    _overlayEntries
-      ..forEach(
-        (key, value) {
-          key
-            ..remove()
-            ..dispose();
-        },
-      )
-      ..clear();
-    // add toast to screen.
-    overlay.insert(entry);
+
     // save toast to the map.
     _overlayEntries[entry] = stateKey;
+    // add toast to screen.
+    overlay.insert(entry);
     _timer = Timer(toastDuration, () async {
       // here we are accessing the toast from the map and
       // not the entry itself because we might dispose the toast
@@ -112,10 +114,10 @@ class Dialogx {
       // first, and if it is, then we remove it.
       if (_overlayEntries.containsKey(entry)) {
         await _overlayEntries[entry]!.currentState!.reveredTransition();
+        _overlayEntries.remove(entry);
         entry
           ..remove()
           ..dispose();
-        _overlayEntries.remove(entry);
       }
     });
   }
