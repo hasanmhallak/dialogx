@@ -1,59 +1,78 @@
 # Dialogx
 
-Dialogs is a Flutter package that provides an easy way to display dialogs and toasts in your Flutter app. With Dialogs, you can save time and effort by avoiding boilerplate code.
-
-If you encounter any issues or have any suggestions, please don't hesitate to open an issue or pull request on the GitHub repository.
+Dialogx is a Flutter package that provides simple and customizable modal dialogs, toast messages, and loading indicators. This package is useful for displaying information to users in a clean and concise way.
 
 ## Installation
 
-To use Dialogs in your Flutter project, follow these steps:
-
-1. Add the package to your pubspec.yaml file:
+To use Dialogx, add the following dependency to your `pubspec.yaml` file:
 
 ```yaml
 dependencies:
-  dialogs: ^0.0.1
+  dialogx: ^1.0.0
 ```
 
-2. Install the package by running flutter pub get in your terminal.
+Then, run `flutter pub get` to install the package.
 
 ## Usage
 
-Dialogs provides the following methods:
+### Modal Dialog
 
-### showToast
+To show a modal dialog, use the `showModalDialog` method:
 
-```Dart
-void showToast(
-  String message, {
-  Duration toastDuration = const Duration(seconds: 3),
-  Duration transitionDuration = const Duration(milliseconds: 200),
-  Color backgroundColor = Colors.black,
-  Color textColor = Colors.white,
-})
+```dart
+final data = await context.showModalDialog<String>(
+  builder: (BuildContext context) {
+    return AlertDialog(
+      title: Text('Dialog Title'),
+      content: Text('Dialog Content'),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context, 'Cancel'),
+          child: Text('Cancel'),
+        ),
+        TextButton(
+          onPressed: () => Navigator.pop(context, 'OK'),
+          child: Text('OK'),
+        ),
+      ],
+    );
+  },
+);
 ```
 
-Displays a Material toast with the specified message. Optional parameters include the duration of the toast, the duration of the transition animation, and the background and text colors.
+This method takes a `builder` function that returns a `Widget`. The `builder` function is called when the dialog is shown. You can customize the appearance and behavior of the dialog by passing additional arguments to `showModalDialog`, such as the `barrierColor`, `barrierDismissible`, and `transitionDuration`.
 
-However, if this function is called multiple times, the previous toast will disappear.
+### Toast
 
-### dismiss
+To show a toast message, use the `showToast` method:
 
-```Dart
-void dismiss<T>([T? result])
+```dart
+context.showToast(
+  'This is a toast message',
+  toastDuration: Duration(seconds: 3),
+  backgroundColor: Colors.black.withOpacity(0.8),
+  textColor: Colors.white,
+);
 ```
 
-Dismisses the current dialog if any, with an optional result. If there is no dialog currently displayed, calling this method will have no effect.
+This method takes a `String` message to display. You can customize the appearance and behavior of the toast by passing additional arguments to `showToast`, such as the `toastDuration`, `backgroundColor`, and `textColor`.
 
-### showModalDialog
+### Loading Indicator
 
-```Dart
-Future<T?> showModalDialog<T>({
-  required WidgetBuilder builder,
-  Color barrierColor = const Color(0x80000000),
-  bool barrierDismissible = true,
-  Duration transitionDuration = const Duration(milliseconds: 200),
-})
+To show a loading indicator, use the `showLoadingIndicator` method:
+
+```dart
+context.showLoading(loader: CircularProgressIndicator());
+await Future.delayed(Duration(seconds: 5));
+loading.dismiss();
 ```
 
-Displays a modal dialog that will block user interaction until dismissed. The dialog is built using the specified WidgetBuilder. Optional parameters include the barrier color, whether the dialog can be dismissed by tapping outside of it, and the duration of the transition animation.
+This method takes a `BuildContext` and returns a `LoadingOverlay` object that can be used to show and dismiss the loading indicator. You can customize the appearance and behavior of the loading indicator by passing additional arguments to `showLoadingIndicator`, such as the `loadingIndicator` and `loadingMessage`.
+
+## Contribution
+
+If you find any bugs or have suggestions for improvements, feel free to open an issue or pull request on GitHub at https://github.com/hasanmhallak/dialogx.
+
+## License
+
+Dialogx is released under the MIT License. See the [LICENSE](https://github.com/hasanmhallak/dialogx/blob/master/LICENSE) file for details.

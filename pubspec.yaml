@@ -1,6 +1,7 @@
 name: dialogx
 description: Dialogs is a Flutter package that provides an easy way to display dialogs and toasts in your Flutter app. With Dialogs, you can save time and effort by avoiding boilerplate code.
-version: 0.0.2
+
+version: 1.0.0
 homepage: https://github.com/hasanmhallak/dialogx
 
 environment:

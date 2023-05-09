@@ -27,7 +27,7 @@ class MyWidget extends StatelessWidget {
                           actions: [
                             TextButton(
                               onPressed: () {
-                                context.dismiss();
+                                Navigator.pop(context);
                               },
                               child: const Text('OK'),
                             ),
